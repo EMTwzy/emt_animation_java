@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.emt_animation_java.www.mapper.mapper">
+    <!--sea_data中有用的数据
+    v_id//作品编号
+    v_name//作品名称
+    v_state//作品状态（集数）
+    v_pic//作品封面
+    v_actor//声优
+    v_publishyear//上映时间（年份）
+    v_publisharea//上映地区（制作国）
+    v_addtime//添加时间（时间戳）
+    v_note//更新状态
+    v_letter//作品开头字母
+    v_director//制作人
+    v_lang//语种（作品语类）
+    -->
+    <!--sql片段-->
+    <sql id="videoData">
+        v_id,v_name,v_state,v_pic,v_actor,v_publishyear,v_publisharea,v_addtime,v_note,v_letter,v_director,v_lang
+    </sql>
+
+    <!--    获取所有数据-->
+    <select id="getAll" resultType="com.emt_animation_java.www.Pojo.videoData">
+        select
+        <include refid="videoData"/>
+        from sea_data
+    </select>
+    <!--    获取所有数据的总额-->
+    <select id="totalVideo" resultType="java.lang.Integer">
+        select count(*)
+        from sea_data
+    </select>
+
+    <!--    随机推荐-->
+    <select id="randomVideo" resultType="com.emt_animation_java.www.Pojo.videoData">
+        select
+        <include refid="videoData"/>
+        from sea_data limit #{start},10
+    </select>
+    <!--    根据名称获取模糊数据-->
+    <select id="selectVideoByName" resultType="com.emt_animation_java.www.Pojo.videoData">
+        select
+        <include refid="videoData"/>
+        from sea_data where v_name like concat('%',#{name},'%')
+    </select>
+    <!--    每周更新榜单-->
+    <select id="weekNew" resultType="com.emt_animation_java.www.Pojo.videoData">
+        select
+        <include refid="videoData"/>
+        from sea_data where
+        (v_addtime BETWEEN #{beforeDate1} AND #{beforeDate2} OR v_addtime BETWEEN #{nowDate1} AND #{nowDate2})
+        AND v_publisharea like '%日%' AND v_publishyear=#{year};
+    </select>
+<!--    分类大全-->
+<!--    获取指定条件的数据-->
+    <select id="selectVideo" resultType="com.emt_animation_java.www.Pojo.videoData">
+        select
+        <include refid="videoData"/>
+        from sea_data
+        <where>
+            1=1
+            <choose>
+                <when test="lang != null &amp;&amp; lang!=''">
+                    and
+                    <choose>
+                        <when test="lang == '其他'">
+                            v_lang in (select v_lang from sea_data where v_lang not in
+                            ('汉语','国语','日语','汉语普通话','普通话','闽南语'))
+                        </when>
+                        <when test="lang == '中文'">
+                            v_lang in (select v_lang from sea_data where v_lang in ('汉语','国语','汉语普通话','普通话','闽南语'))
+                        </when>
+                        <otherwise>
+                            v_lang = #{lang}
+                        </otherwise>
+                    </choose>
+                </when>
+            </choose>
+            <choose>
+                <when test="publisharea != null &amp;&amp; publisharea!=''">
+                    and
+                    <choose>
+                        <when test="publisharea == '中国'">
+                            v_publisharea in (select v_publisharea from sea_data where v_publisharea in
+                            ('大陆','中国大陆','中国','国产','香港','台湾'))
+                        </when>
+                        <when test="publisharea == '欧美'">
+                            v_publisharea in (select v_publisharea from sea_data where v_publisharea not in
+                            ('日本','大陆','中国大陆','中国','国产','香港','台湾','韩国'))
+                        </when>
+                        <when test="publisharea == '日韩'">
+                            v_publisharea in (select v_publisharea from sea_data where v_publisharea in ('日本','韩国'))
+                        </when>
+                        <otherwise>
+
+                        </otherwise>
+                    </choose>
+                </when>
+            </choose>
+            <choose>
+                <when test="publishyear!=null &amp;&amp;  publishyear>0">
+                    and
+                    <choose>
+                        <when test="before>0">
+                            v_publishyear&lt;#{before}
+                        </when>
+                        <otherwise>
+                            v_publishyear=#{publishyear}
+                        </otherwise>
+                    </choose>
+                </when>
+            </choose>
+            <if test="letter!=null &amp;&amp; letter!=''">
+                and v_letter=#{letter}
+            </if>
+        </where>
+        limit #{pageNum},20
+    </select>
+<!--    获取指定条件的数据的总额-->
+    <select id="selectVideoNum" resultType="integer">
+        select  count(*)
+        from sea_data
+        <where>
+            1=1
+            <choose>
+                <when test="lang != null &amp;&amp; lang!=''">
+                    and
+                    <choose>
+                        <when test="lang == '其他'">
+                            v_lang in (select v_lang from sea_data where v_lang not in
+                            ('汉语','国语','日语','汉语普通话','普通话','闽南语'))
+                        </when>
+                        <when test="lang == '中文'">
+                            v_lang in (select v_lang from sea_data where v_lang in ('汉语','国语','汉语普通话','普通话','闽南语'))
+                        </when>
+                        <otherwise>
+                            v_lang = #{lang}
+                        </otherwise>
+                    </choose>
+                </when>
+            </choose>
+            <choose>
+                <when test="publisharea != null &amp;&amp; publisharea!=''">
+                    and
+                    <choose>
+                        <when test="publisharea == '中国'">
+                            v_publisharea in (select v_publisharea from sea_data where v_publisharea in
+                            ('大陆','中国大陆','中国','国产','香港','台湾'))
+                        </when>
+                        <when test="publisharea == '欧美'">
+                            v_publisharea in (select v_publisharea from sea_data where v_publisharea not in
+                            ('日本','大陆','中国大陆','中国','国产','香港','台湾','韩国'))
+                        </when>
+                        <when test="publisharea == '日韩'">
+                            v_publisharea in (select v_publisharea from sea_data where v_publisharea in ('日本','韩国'))
+                        </when>
+                        <otherwise>
+
+                        </otherwise>
+                    </choose>
+                </when>
+            </choose>
+            <choose>
+                <when test="publishyear!=null &amp;&amp;  publishyear>0">
+                    and
+                    <choose>
+                        <when test="before>0">
+                            v_publishyear&lt;#{before}
+                        </when>
+                        <otherwise>
+                            v_publishyear=#{publishyear}
+                        </otherwise>
+                    </choose>
+                </when>
+            </choose>
+            <if test="letter!=null &amp;&amp; letter!=''">
+                and v_letter=#{letter}
+            </if>
+        </where>
+    </select>
+<!--    播放区-->
+<!--    根据id值来获取视频的基础数据 -->
+    <select id="selectVideoById" resultType="com.emt_animation_java.www.Pojo.videoData">
+        select <include refid="videoData"/> from sea_data where v_id=#{vid}
+    </select>
+    <!--    根据id值来获取视频的详细介绍 -->
+    <select id="selectContent" resultType="com.emt_animation_java.www.Pojo.content">
+        select * from sea_content where v_id=#{vid}
+    </select>
+
+    <!--  根据id值来获取视频的播放数据  -->
+    <select id="selectPlay" resultType="com.emt_animation_java.www.Pojo.play">
+        select * from sea_playdata where v_id=#{vid}
+    </select>
+
+</mapper>
