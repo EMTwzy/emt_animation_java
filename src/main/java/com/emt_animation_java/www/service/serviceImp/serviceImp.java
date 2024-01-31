@@ -8,6 +8,7 @@ import com.emt_animation_java.www.service.service;
 import com.emt_animation_java.www.utils.playUtils;
 import com.emt_animation_java.www.utils.timeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@Repository
 public class serviceImp implements service {
     //引入mapper
     @Autowired
@@ -123,6 +125,7 @@ public class serviceImp implements service {
     @Override
     public List getPlay(int vid) {
         play result=mapper.selectPlay(vid);
+        System.out.println("@@getPlay"+result);
         List list=playUtils.getUrl(result.getBody());
         return list;
     }

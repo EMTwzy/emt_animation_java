@@ -5,11 +5,14 @@ import com.emt_animation_java.www.Pojo.play;
 import com.emt_animation_java.www.Pojo.videoData;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.mybatis.spring.support.SqlSessionDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Mapper
-public interface mapper {
+@Repository
+public interface mapper{
 
     /**
      *

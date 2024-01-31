@@ -44,6 +44,7 @@ public class playController {
     //根据id获取视频的集数
     @GetMapping("/getScore")
     public List getScore(int vid){
+        System.out.println("");
         List result=service.getScore(vid);
         return result;
     }
