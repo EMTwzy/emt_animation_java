@@ -1,0 +1,8 @@
+server:
+  port: 8080
+  ssl:
+    key-store: classpath:emtanimation.fun.jks
+    key-store-password: vxl96nmo
+    enabled: true
+    key-store-type: jks
+

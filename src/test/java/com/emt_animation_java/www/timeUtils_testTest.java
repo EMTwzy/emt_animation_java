@@ -11,20 +11,43 @@ public class timeUtils_testTest {
     @Test
     public void time_utils() {
         String weekStart=getWeekTime();       //获取今天的日期，并且填充今天的时间戳
-        System.out.println("本周的第一天的日期为"+weekStart);
+        System.out.println("上周的第一天的日期为"+weekStart);
 
         fullWeekTime();  //填充其余天的时间戳
         for (long l : weekTime) {
             System.out.print(l+"\t");
         }
     }
+    @Test
+    public void time_utils2(){
+        int i=getTodayNum();
+        LocalDate local=LocalDate.now();
+        long l= getDateTime(String.valueOf(local));
+        //首先填补前天以前的数据
+        for (int j = 0; j < i+6; j++) {
+            weekTime[j]=l-(i+6-j)*86400;
+        }
+        weekTime[i+6]=l;
+        //填补今天往后的数据
+        for (int j = i+7; j <15 ; j++) {
+            weekTime[j]=l+(j-i-6)*86400;
+        }
+        /*int a=0;
+        for (long l1 : weekTime) {
+            System.out.print("   星期"+(a+1)+":"+l1);
+            a++;
+            if(a==7){
+                System.out.println();
+                a=0;
+            }
+        }
+        System.out.println("\t\t今天是"+i+"\t时间"+l);*/
+    }
 
     //解析当前时间，获知当前是星期几
     public int getTodayNum(){
         LocalDate date = LocalDate.now(); // 获取当前日期
-        //System.out.println("this date is \t"+date);
-        DayOfWeek dayOfWeek = date.getDayOfWeek(); // 获取当前星期
-        //System.out.println("今天是" + dayOfWeek.getValue()); // 输出"今天是星期几"
+        DayOfWeek dayOfWeek = date.getDayOfWeek(); // 获取当前星期数
         return dayOfWeek.getValue();
     }
 

@@ -61,7 +61,8 @@ public class serviceImp implements service {
     public List<videoData> weekNew(Integer day) {
         System.out.println(day+"\t!!!!!!!!!!!!!!!!!!!!!!");
         long[] weekTime= timeUtils.time_utils();
-        List<videoData> result= mapper.weekNew(weekTime[day-1],weekTime[day], weekTime[day+6],weekTime[day+7],LocalDate.now().getYear());  //传入的参数是从1开始的
+        System.out.println("更新榜单参数:\t上个星期的今天"+weekTime[day-1]+"\t上个星期的明天"+weekTime[day]+"\t今天"+weekTime[day+6]+"\t明天"+weekTime[day+7]+"\t年份"+LocalDate.now().getYear());
+        List<videoData> result= mapper.weekNew(weekTime[day-1],weekTime[day], weekTime[day+6],weekTime[day+7],LocalDate.now().getYear()-1,LocalDate.now().getYear());  //传入的参数是从1开始的
         return result;
     }
 

@@ -25,7 +25,7 @@ public interface mapper{
     //根据名称获取模糊数据
     List<videoData> selectVideoByName(String name);
     //每周更新榜单
-    List<videoData> weekNew(@Param("beforeDate1") long beforeDate1,@Param("beforeDate2") long beforeDate2,@Param("nowDate1")long nowDate1,@Param("nowDate2") long nowDate2,@Param("year") int year);
+    List<videoData> weekNew(@Param("beforeDate1") long beforeDate1,@Param("beforeDate2") long beforeDate2,@Param("nowDate1")long nowDate1,@Param("nowDate2") long nowDate2,@Param("beforeyear") int beforeyear,@Param("year") int year);
 
     /**
      *

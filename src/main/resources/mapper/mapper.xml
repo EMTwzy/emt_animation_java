@@ -50,7 +50,7 @@
         <include refid="videoData"/>
         from sea_data where
         (v_addtime BETWEEN #{beforeDate1} AND #{beforeDate2} OR v_addtime BETWEEN #{nowDate1} AND #{nowDate2})
-        AND v_publisharea like '%日%' AND v_publishyear=#{year};
+        AND v_publisharea like '%日%' AND (v_publishyear=#{beforeyear} or v_publishyear=#{year});
     </select>
 <!--    分类大全-->
 <!--    获取指定条件的数据-->
