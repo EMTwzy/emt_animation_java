@@ -1,6 +1,7 @@
 package com.emt_animation_java.www.service.serviceImp;
 
 import com.emt_animation_java.www.Pojo.content;
+import com.emt_animation_java.www.Pojo.ff_vod;
 import com.emt_animation_java.www.Pojo.play;
 import com.emt_animation_java.www.Pojo.videoData;
 import com.emt_animation_java.www.mapper.mapper;
@@ -29,13 +30,13 @@ public class serviceImp implements service {
 
     //随机推荐
     @Override
-    public List<videoData> randomVideo() {
+    public List<ff_vod> randomVideo() {
         total=mapper.totalVideo();
         Integer start=(int)Math.floor(Math.random()*total)-10;
         if (start < 0) {
             start = 0;
         }
-        List<videoData> result=mapper.randomVideo(start);
+        List<ff_vod> result=mapper.randomVideo(start);
         return result;
     }
 
@@ -50,19 +51,20 @@ public class serviceImp implements service {
 
     //根据名称获取模糊数据
     @Override
-    public List<videoData> selectVideoByName(String name) {
-        List<videoData> result= mapper.selectVideoByName(name);
+    public List<ff_vod> selectVideoByName(String name) {
+        List<ff_vod> result= mapper.selectVideoByName(name);
         System.out.println("service测试"+result+"\t"+name);
         return result;
     }
 
     //每周更新榜单
     @Override
-    public List<videoData> weekNew(Integer day) {
+    public List<ff_vod> weekNew(Integer day) {
         System.out.println(day+"\t!!!!!!!!!!!!!!!!!!!!!!");
         long[] weekTime= timeUtils.time_utils();
         System.out.println("更新榜单参数:\t上个星期的今天"+weekTime[day-1]+"\t上个星期的明天"+weekTime[day]+"\t今天"+weekTime[day+6]+"\t明天"+weekTime[day+7]+"\t年份"+LocalDate.now().getYear());
-        List<videoData> result= mapper.weekNew(weekTime[day-1],weekTime[day], weekTime[day+6],weekTime[day+7],LocalDate.now().getYear()-1,LocalDate.now().getYear());  //传入的参数是从1开始的
+        List<ff_vod> result= mapper.weekNew(weekTime[day-1],weekTime[day], weekTime[day+6],weekTime[day+7],LocalDate.now().getYear()-1,LocalDate.now().getYear());  //传入的参数是从1开始的
+        System.out.println("今日更新内容\n"+result);
         return result;
     }
 
@@ -73,7 +75,7 @@ public class serviceImp implements service {
      * */
     //获取指定条件的数据
     @Override
-    public List<videoData> selectVideo(String lang, String publisharea, String publishyear,String letter, Integer pageNum) {
+    public List<ff_vod> selectVideo(String lang, String publisharea, String publishyear,String letter, Integer pageNum) {
         LocalDate local=LocalDate.now();
         Integer year=0;
         Integer before=0;
@@ -86,7 +88,7 @@ public class serviceImp implements service {
         }
 
         Integer pagenum=(pageNum-1)*20;
-        List<videoData> result= mapper.selectVideo(lang, publisharea,year,before,letter,pagenum);
+        List<ff_vod> result= mapper.selectVideo(lang, publisharea,year,before,letter,pagenum);
         return result;
     }
 
@@ -110,31 +112,31 @@ public class serviceImp implements service {
 
     // 根据视频id来获取视频的信息
     @Override
-    public videoData selectVideoById(int vid) {
-        videoData result=mapper.selectVideoById(vid);
+    public ff_vod selectVideoById(int vid) {
+        ff_vod result=mapper.selectVideoById(vid);
         return result;
     }
 
     // 根据视频id来获取视频的详细信息
     @Override
-    public content selectContent(int vid) {
-        content result= mapper.selectContent(vid);
+    public String selectContent(int vid) {
+        String result= mapper.selectContent(vid);
         return result;
     }
 
     // 根据视频id来获取视频的播放数据
     @Override
     public List getPlay(int vid) {
-        play result=mapper.selectPlay(vid);
+        String result=mapper.selectPlay(vid);
         System.out.println("@@getPlay"+result);
-        List list=playUtils.getUrl(result.getBody());
+        List list=playUtils.getUrl2(result);
         return list;
     }
     // 根据视频id来获取视频的集数
     @Override
     public List getScore(int vid) {
-        play result=mapper.selectPlay(vid);
-        List list=playUtils.getScore(result.getBody());
+        String result=mapper.selectPlay(vid);
+        List list=playUtils.getScore2(result);
         return list;
     }
 }

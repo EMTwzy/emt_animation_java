@@ -1,11 +1,16 @@
 package com.emt_animation_java.www.utils;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class playUtils {
+    /**
+     * sea
+     * */
     //获取集数
     public static List<String> getScore(String result) {
         List<String> list = new ArrayList<>();
@@ -68,6 +73,54 @@ public class playUtils {
         return list;
     }
 
+    /**
+     * feifei
+     * */
+    //获取集数
+    public static List<String> getScore2(String result){
+        // 正则表达式
+        String regex = "(第\\d+集)\\$(https://[^\\s]+)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(result);
 
+        // 创建1个集合
+        List<String> collection1 = new ArrayList<>();
+
+
+        // 分别放入集合
+        while (matcher.find()) {
+            collection1.add(matcher.group(1));
+
+        }
+
+        if(collection1.size()<1){
+            regex = "([^$]+)\\$https://[^\\s]+";
+            pattern = Pattern.compile(regex);
+            matcher = pattern.matcher(result);
+            while (matcher.find()) {
+                collection1.add(matcher.group(1));
+
+            }
+        }
+        return collection1;
+    }
+    //获取播放链接
+    public static List<String> getUrl2(String url){
+        // 正则表达式
+        String regex = "(第\\d+集)\\$(https://[^\\s]+)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(url);
+
+        // 创建两个集合
+        List<String> collection2 = new ArrayList<>();
+
+
+        // 分别放入集合
+        while (matcher.find()) {
+            collection2.add(matcher.group(2));
+
+        }
+        return collection2;
+    }
 
 }

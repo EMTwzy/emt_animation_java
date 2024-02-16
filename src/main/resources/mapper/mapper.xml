@@ -16,48 +16,60 @@
     v_lang//语种（作品语类）
     -->
     <!--sql片段-->
+    <!--
     <sql id="videoData">
         v_id,v_name,v_state,v_pic,v_actor,v_publishyear,v_publisharea,v_addtime,v_note,v_letter,v_director,v_lang
     </sql>
+    -->
 
+    <!--feifei-->
+    <!--ff_vod中有用的字段
+     vod_id;//视频id号             vod_name;//视频名称 vod_title;//对标note(当前番剧状态)   vod_actor;//配音
+vod_director;//编剧导演     vod_content;//番剧简介      vod_pic;//封面
+vod_area;//地区，对标v_publicarea        vod_language;//语言类别     vod_year;//上映年份
+vod_addtime;//时间戳       vod_url;//播放地址      vod_letter;//开头字母大小写
+    -->
+    <sql id="ff">
+        vod_id,vod_name,vod_title,vod_actor,vod_content,vod_pic,vod_area,vod_language,vod_year,vod_addtime,vod_url,vod_letter
+    </sql>
     <!--    获取所有数据-->
-    <select id="getAll" resultType="com.emt_animation_java.www.Pojo.videoData">
+    <select id="getAll" resultType="com.emt_animation_java.www.Pojo.ff_vod">
         select
-        <include refid="videoData"/>
-        from sea_data
+        <include refid="ff"/>
+        from ff_vod
     </select>
     <!--    获取所有数据的总额-->
     <select id="totalVideo" resultType="java.lang.Integer">
         select count(*)
-        from sea_data
+        from ff_vod
     </select>
 
     <!--    随机推荐-->
-    <select id="randomVideo" resultType="com.emt_animation_java.www.Pojo.videoData">
+    <select id="randomVideo" resultType="com.emt_animation_java.www.Pojo.ff_vod">
         select
-        <include refid="videoData"/>
-        from sea_data limit #{start},10
+        <include refid="ff"/>
+        from ff_vod limit #{start},10
     </select>
     <!--    根据名称获取模糊数据-->
-    <select id="selectVideoByName" resultType="com.emt_animation_java.www.Pojo.videoData">
+    <select id="selectVideoByName" resultType="com.emt_animation_java.www.Pojo.ff_vod">
         select
-        <include refid="videoData"/>
-        from sea_data where v_name like concat('%',#{name},'%')
+        <include refid="ff"/>
+        from ff_vod where vod_name like concat('%',#{name},'%')
     </select>
     <!--    每周更新榜单-->
-    <select id="weekNew" resultType="com.emt_animation_java.www.Pojo.videoData">
+    <select id="weekNew" resultType="com.emt_animation_java.www.Pojo.ff_vod">
         select
-        <include refid="videoData"/>
-        from sea_data where
-        (v_addtime BETWEEN #{beforeDate1} AND #{beforeDate2} OR v_addtime BETWEEN #{nowDate1} AND #{nowDate2})
-        AND v_publisharea like '%日%' AND (v_publishyear=#{beforeyear} or v_publishyear=#{year});
+        <include refid="ff"/>
+        from ff_vod where
+        (vod_addtime BETWEEN #{beforeDate1} AND #{beforeDate2} OR vod_addtime BETWEEN #{nowDate1} AND #{nowDate2})
+        AND vod_area like '%日%' AND (vod_year=#{beforeyear} or vod_year=#{year});
     </select>
-<!--    分类大全-->
-<!--    获取指定条件的数据-->
-    <select id="selectVideo" resultType="com.emt_animation_java.www.Pojo.videoData">
+    <!--    分类大全-->
+    <!--    获取指定条件的数据-->
+    <select id="selectVideo" resultType="com.emt_animation_java.www.Pojo.ff_vod">
         select
-        <include refid="videoData"/>
-        from sea_data
+        <include refid="ff"/>
+        from ff_vod
         <where>
             1=1
             <choose>
@@ -65,14 +77,14 @@
                     and
                     <choose>
                         <when test="lang == '其他'">
-                            v_lang in (select v_lang from sea_data where v_lang not in
+                            vod_language in (select vod_language from ff_vod where vod_language not in
                             ('汉语','国语','日语','汉语普通话','普通话','闽南语'))
                         </when>
                         <when test="lang == '中文'">
-                            v_lang in (select v_lang from sea_data where v_lang in ('汉语','国语','汉语普通话','普通话','闽南语'))
+                            vod_language in (select vod_language from ff_vod where vod_language in ('汉语','国语','汉语普通话','普通话','闽南语'))
                         </when>
                         <otherwise>
-                            v_lang = #{lang}
+                            vod_language = #{lang}
                         </otherwise>
                     </choose>
                 </when>
@@ -82,15 +94,15 @@
                     and
                     <choose>
                         <when test="publisharea == '中国'">
-                            v_publisharea in (select v_publisharea from sea_data where v_publisharea in
+                            vod_area in (select vod_area from ff_vod where vod_area in
                             ('大陆','中国大陆','中国','国产','香港','台湾'))
                         </when>
                         <when test="publisharea == '欧美'">
-                            v_publisharea in (select v_publisharea from sea_data where v_publisharea not in
+                            vod_area in (select vod_area from ff_vod where vod_area not in
                             ('日本','大陆','中国大陆','中国','国产','香港','台湾','韩国'))
                         </when>
                         <when test="publisharea == '日韩'">
-                            v_publisharea in (select v_publisharea from sea_data where v_publisharea in ('日本','韩国'))
+                            vod_area in (select vod_area from sea_data where vod_area in ('日本','韩国'))
                         </when>
                         <otherwise>
 
@@ -103,24 +115,24 @@
                     and
                     <choose>
                         <when test="before>0">
-                            v_publishyear&lt;#{before}
+                            vod_year&lt;#{before}
                         </when>
                         <otherwise>
-                            v_publishyear=#{publishyear}
+                            vod_year=#{publishyear}
                         </otherwise>
                     </choose>
                 </when>
             </choose>
             <if test="letter!=null &amp;&amp; letter!=''">
-                and v_letter=#{letter}
+                and vod_letter=#{letter}
             </if>
         </where>
         limit #{pageNum},20
     </select>
-<!--    获取指定条件的数据的总额-->
+    <!--    获取指定条件的数据的总额-->
     <select id="selectVideoNum" resultType="integer">
-        select  count(*)
-        from sea_data
+        select count(*)
+        from ff_vod
         <where>
             1=1
             <choose>
@@ -128,14 +140,14 @@
                     and
                     <choose>
                         <when test="lang == '其他'">
-                            v_lang in (select v_lang from sea_data where v_lang not in
+                            vod_language in (select vod_language from ff_vod where vod_language not in
                             ('汉语','国语','日语','汉语普通话','普通话','闽南语'))
                         </when>
                         <when test="lang == '中文'">
-                            v_lang in (select v_lang from sea_data where v_lang in ('汉语','国语','汉语普通话','普通话','闽南语'))
+                            vod_language in (select vod_language from ff_vod where vod_language in ('汉语','国语','汉语普通话','普通话','闽南语'))
                         </when>
                         <otherwise>
-                            v_lang = #{lang}
+                            vod_language = #{lang}
                         </otherwise>
                     </choose>
                 </when>
@@ -145,15 +157,15 @@
                     and
                     <choose>
                         <when test="publisharea == '中国'">
-                            v_publisharea in (select v_publisharea from sea_data where v_publisharea in
+                            vod_area in (select vod_area from ff_vod where vod_area in
                             ('大陆','中国大陆','中国','国产','香港','台湾'))
                         </when>
                         <when test="publisharea == '欧美'">
-                            v_publisharea in (select v_publisharea from sea_data where v_publisharea not in
+                            vod_area in (select vod_area from ff_vod where vod_area not in
                             ('日本','大陆','中国大陆','中国','国产','香港','台湾','韩国'))
                         </when>
                         <when test="publisharea == '日韩'">
-                            v_publisharea in (select v_publisharea from sea_data where v_publisharea in ('日本','韩国'))
+                            vod_area in (select vod_area from sea_data where vod_area in ('日本','韩国'))
                         </when>
                         <otherwise>
 
@@ -166,32 +178,38 @@
                     and
                     <choose>
                         <when test="before>0">
-                            v_publishyear&lt;#{before}
+                            vod_year&lt;#{before}
                         </when>
                         <otherwise>
-                            v_publishyear=#{publishyear}
+                            vod_year=#{publishyear}
                         </otherwise>
                     </choose>
                 </when>
             </choose>
             <if test="letter!=null &amp;&amp; letter!=''">
-                and v_letter=#{letter}
+                and vod_letter=#{letter}
             </if>
         </where>
     </select>
-<!--    播放区-->
-<!--    根据id值来获取视频的基础数据 -->
-    <select id="selectVideoById" resultType="com.emt_animation_java.www.Pojo.videoData">
-        select <include refid="videoData"/> from sea_data where v_id=#{vid}
+    <!--    播放区-->
+    <!--    根据id值来获取视频的基础数据 -->
+    <select id="selectVideoById" resultType="com.emt_animation_java.www.Pojo.ff_vod">
+        select
+        <include refid="ff"/>
+        from ff_vod where vod_id=#{vid}
     </select>
     <!--    根据id值来获取视频的详细介绍 -->
-    <select id="selectContent" resultType="com.emt_animation_java.www.Pojo.content">
-        select * from sea_content where v_id=#{vid}
+    <select id="selectContent" resultType="String">
+        select vod_content
+        from ff_vod
+        where vod_id = #{vid}
     </select>
 
     <!--  根据id值来获取视频的播放数据  -->
-    <select id="selectPlay" resultType="com.emt_animation_java.www.Pojo.play">
-        select * from sea_playdata where v_id=#{vid}
+    <select id="selectPlay" resultType="String">
+        select vod_url
+        from ff_vod
+        where vod_id = #{vid}
     </select>
 
 </mapper>

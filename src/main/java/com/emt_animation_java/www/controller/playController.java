@@ -1,6 +1,7 @@
 package com.emt_animation_java.www.controller;
 
 import com.emt_animation_java.www.Pojo.content;
+import com.emt_animation_java.www.Pojo.ff_vod;
 import com.emt_animation_java.www.Pojo.play;
 import com.emt_animation_java.www.Pojo.videoData;
 import com.emt_animation_java.www.service.serviceImp.serviceImp;
@@ -25,15 +26,15 @@ public class playController {
              * */
       //根据id获取视频的数据
     @GetMapping("/selectVideoById")
-    public videoData selectVideoById(int vid){
-        videoData result=service.selectVideoById(vid);
+    public ff_vod selectVideoById(int vid){
+        ff_vod result=service.selectVideoById(vid);
         return result;
     }
     //根据id来获取视频的详细介绍
     @GetMapping("/selectContent")
     public String selectContent(int vid){
-        content result=service.selectContent(vid);
-        return result.getBody();
+        String result=service.selectContent(vid);
+        return result;
     }
     //根据id获取视频的播放数据
     @GetMapping("/getPlay")

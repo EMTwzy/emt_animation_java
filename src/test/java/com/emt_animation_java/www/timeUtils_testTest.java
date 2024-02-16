@@ -32,7 +32,7 @@ public class timeUtils_testTest {
         for (int j = i+7; j <15 ; j++) {
             weekTime[j]=l+(j-i-6)*86400;
         }
-        /*int a=0;
+        int a=0;
         for (long l1 : weekTime) {
             System.out.print("   星期"+(a+1)+":"+l1);
             a++;
@@ -41,7 +41,7 @@ public class timeUtils_testTest {
                 a=0;
             }
         }
-        System.out.println("\t\t今天是"+i+"\t时间"+l);*/
+        System.out.println("\t\t今天是"+i+"\t时间"+l);
     }
 
     //解析当前时间，获知当前是星期几

@@ -1,5 +1,6 @@
 package com.emt_animation_java.www.controller;
 
+import com.emt_animation_java.www.Pojo.ff_vod;
 import com.emt_animation_java.www.Pojo.videoData;
 import com.emt_animation_java.www.service.serviceImp.serviceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,9 @@ public class allController {
      * */
 
     @GetMapping("/selectVideo")
-    public List<videoData> selectVideo(String lang, String publisharea, String publishyear,String letter, Integer pageNum){
+    public List<ff_vod> selectVideo(String lang, String publisharea, String publishyear, String letter, Integer pageNum){
         System.out.println(lang+"\t"+publisharea+"\t"+publishyear+"\t"+letter+"\t"+pageNum);
-        List<videoData> result=service.selectVideo(lang,publisharea,publishyear,letter,pageNum);
+        List<ff_vod> result=service.selectVideo(lang,publisharea,publishyear,letter,pageNum);
         return result;
     }
 
