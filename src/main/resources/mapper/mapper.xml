@@ -27,17 +27,13 @@
      vod_id;//视频id号             vod_name;//视频名称 vod_title;//对标note(当前番剧状态)   vod_actor;//配音
 vod_director;//编剧导演     vod_content;//番剧简介      vod_pic;//封面
 vod_area;//地区，对标v_publicarea        vod_language;//语言类别     vod_year;//上映年份
-vod_addtime;//时间戳       vod_url;//播放地址      vod_letter;//开头字母大小写
+vod_addtime;//时间戳       vod_url;//播放地址      vod_letter;//开头字母大小写       vod_play;//视频所属
     -->
     <sql id="ff">
-        vod_id,vod_name,vod_title,vod_actor,vod_content,vod_pic,vod_area,vod_language,vod_year,vod_addtime,vod_url,vod_letter
+        vod_id,vod_name,vod_title,vod_actor,vod_content,vod_pic,vod_area,vod_language,vod_year,vod_addtime,vod_url,vod_letter,vod_play
     </sql>
-    <!--    获取所有数据-->
-    <select id="getAll" resultType="com.emt_animation_java.www.Pojo.ff_vod">
-        select
-        <include refid="ff"/>
-        from ff_vod
-    </select>
+
+
     <!--    获取所有数据的总额-->
     <select id="totalVideo" resultType="java.lang.Integer">
         select count(*)
@@ -81,7 +77,8 @@ vod_addtime;//时间戳       vod_url;//播放地址      vod_letter;//开头字
                             ('汉语','国语','日语','汉语普通话','普通话','闽南语'))
                         </when>
                         <when test="lang == '中文'">
-                            vod_language in (select vod_language from ff_vod where vod_language in ('汉语','国语','汉语普通话','普通话','闽南语'))
+                            vod_language in (select vod_language from ff_vod where vod_language in
+                            ('汉语','国语','汉语普通话','普通话','闽南语'))
                         </when>
                         <otherwise>
                             vod_language = #{lang}
@@ -144,7 +141,8 @@ vod_addtime;//时间戳       vod_url;//播放地址      vod_letter;//开头字
                             ('汉语','国语','日语','汉语普通话','普通话','闽南语'))
                         </when>
                         <when test="lang == '中文'">
-                            vod_language in (select vod_language from ff_vod where vod_language in ('汉语','国语','汉语普通话','普通话','闽南语'))
+                            vod_language in (select vod_language from ff_vod where vod_language in
+                            ('汉语','国语','汉语普通话','普通话','闽南语'))
                         </when>
                         <otherwise>
                             vod_language = #{lang}
@@ -211,5 +209,101 @@ vod_addtime;//时间戳       vod_url;//播放地址      vod_letter;//开头字
         from ff_vod
         where vod_id = #{vid}
     </select>
+
+    <!--     ***************************手机端接口*************************       -->
+
+    <!--    注册用户     id以及pass由mysql自动生成-->
+    <insert id="register">
+        insert into emt_user(user_name, user_password, login_time, login_ip, login_device)
+        values ( #{userName}, #{userPassword}
+               , #{loginTime}, #{loginIp}, #{loginDevice});
+    </insert>
+    <!--  修改用户数据  -->
+    <update id="changeUser">
+        update emt_user
+        <set>
+            <trim prefix="" suffixOverrides=",">
+            <if test="userName!='' and userName!=null">
+                user_name=#{userName},
+            </if>
+            <if test="userPassword!='' and userPassword!=null">
+                user_password=#{userPassword},
+            </if>
+            <if test="loginTime!='' and loginTime!=null">
+                login_time=#{loginTime},
+            </if>
+            <if test="loginIp!='' and loginIp!=null">
+                login_ip=#{loginIp},
+            </if>
+            <if test="loginDevice!='' and loginDevice!=null">
+                login_device=#{loginDevice}
+            </if>
+            </trim>
+        </set>
+
+        where user_id=#{userId}
+    </update>
+    <!--    注册用户是否存在 名称不可一致-->
+    <select id="selectUserName" resultType="integer">
+        select count(*)
+        from emt_user
+        where user_name = #{userName}
+    </select>
+    <!--    用户登录-->
+    <select id="loginUser" resultType="com.emt_animation_java.www.Pojo.emt_user">
+        select *
+        from emt_user
+        where user_name = #{userName}
+          and user_password = #{userPassword}
+          and login_pass = 1;
+    </select>
+
+    <!--    添加追番    -->
+    <insert id="addSubscribe">
+        insert into emt_subscribe(user_id, user_subid)
+        values (#{userId}, #{userSubId})
+    </insert>
+    <!--    获取用户追番内容-->
+    <select id="selectSubscribe" resultType="com.emt_animation_java.www.Pojo.emt_subscribe">
+        select *
+        from emt_subscribe
+        where user_id = #{userId}
+    </select>
+    <!--    检测是否已经追番-->
+    <select id="isSubscribe" resultType="java.lang.Integer">
+        select count(*)
+        from emt_subscribe
+        where user_id = #{userId}
+          and user_subid = #{userSubId}
+    </select>
+    <!--        取消追番-->
+    <delete id="deleteSubscribe">
+        delete
+        from emt_subscribe
+        where user_id = #{userId}
+          and user_subid = #{userSubId}
+    </delete>
+
+    <!--    获取观看历史-->
+    <select id="getHistory" resultType="com.emt_animation_java.www.Pojo.emt_history">
+        select * from emt_history where user_id=#{userId}
+    </select>
+    <!--    添加历史记录-->
+    <insert id="addHistory">
+        insert into emt_history(user_id,vod_preid,vod_episode,vod_watchtime) values (#{userId},#{vodPreId},#{vodEpisode},#{vodWatchTime})
+    </insert>
+<!--    删除历史记录    -->
+    <delete id="deleteHistory">
+        delete from emt_history where user_id=#{userId} and vod_preid=#{vodPreId} and vod_episode=#{vodEpisode}
+    </delete>
+<!--    查看历史记录是否已经存在-->
+    <select id="selectHistory"  resultType="com.emt_animation_java.www.Pojo.emt_history">
+        select * from emt_history where user_id=#{userId} and vod_preId=#{vodPreId}
+    </select>
+<!--更新历史记录-->
+    <update id="updateHistory">
+        update emt_history set vod_Episode=#{vodEpisode},vod_watchtime=#{vodWatchTime} where user_id=#{userId} and vod_preid=#{vodPreId}
+    </update>
+
 
 </mapper>

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
-@CrossOrigin
+
 @ResponseBody
 @Controller
 public class playController {
@@ -38,15 +38,18 @@ public class playController {
     }
     //根据id获取视频的播放数据
     @GetMapping("/getPlay")
-    public List selectPlay(int vid){
-        List result =service.getPlay(vid);
+    public List selectPlay(int vid,Integer options){
+        options=options==null?0:1;      //0是web端，1是app端
+
+        List result =service.getPlay(vid,options);
         return result;
     }
     //根据id获取视频的集数
     @GetMapping("/getScore")
-    public List getScore(int vid){
-        System.out.println("");
-        List result=service.getScore(vid);
+    public List getScore(int vid,Integer options){
+        options=options==null?0:1;      //0是web端，1是app端
+
+        List result=service.getScore(vid,options);
         return result;
     }
 

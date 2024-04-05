@@ -22,7 +22,7 @@ public class timeUtils_testTest {
     public void time_utils2(){
         int i=getTodayNum();
         LocalDate local=LocalDate.now();
-        long l= getDateTime(String.valueOf(local));
+        long l= getDateTime2(local);
         //首先填补前天以前的数据
         for (int j = 0; j < i+6; j++) {
             weekTime[j]=l-(i+6-j)*86400;
@@ -160,6 +160,18 @@ public class timeUtils_testTest {
         String targetDateStr = date;
         // 将目标日期字符串解析为 LocalDate 对象
         LocalDate targetDate = LocalDate.parse(targetDateStr);
+        // 将 LocalDate 转换为 Instant
+        Instant instant = targetDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        // 获取时间戳（秒数）
+        long timestamp = instant.getEpochSecond();
+        //System.out.println("目标日期：" + targetDateStr);
+        //System.out.println("转换后的时间戳：" + timestamp);
+        return timestamp;
+    }
+
+    //将时间转换为时间戳
+    public long getDateTime2(LocalDate date){
+        LocalDate targetDate = date;
         // 将 LocalDate 转换为 Instant
         Instant instant = targetDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
         // 获取时间戳（秒数）

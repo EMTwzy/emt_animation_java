@@ -1,9 +1,6 @@
 package com.emt_animation_java.www.service.serviceImp;
 
-import com.emt_animation_java.www.Pojo.content;
-import com.emt_animation_java.www.Pojo.ff_vod;
-import com.emt_animation_java.www.Pojo.play;
-import com.emt_animation_java.www.Pojo.videoData;
+import com.emt_animation_java.www.Pojo.*;
 import com.emt_animation_java.www.mapper.mapper;
 import com.emt_animation_java.www.service.service;
 import com.emt_animation_java.www.utils.playUtils;
@@ -126,17 +123,110 @@ public class serviceImp implements service {
 
     // 根据视频id来获取视频的播放数据
     @Override
-    public List getPlay(int vid) {
+    public List getPlay(int vid,Integer options) {
         String result=mapper.selectPlay(vid);
-        System.out.println("@@getPlay"+result);
-        List list=playUtils.getUrl2(result);
+        List list=playUtils.getUrl2(result,options);
+        System.out.println("@@getPlay"+list);
         return list;
     }
     // 根据视频id来获取视频的集数
     @Override
-    public List getScore(int vid) {
+    public List getScore(int vid,Integer options) {
         String result=mapper.selectPlay(vid);
-        List list=playUtils.getScore2(result);
+        List list=playUtils.getScore2(result,options);
         return list;
     }
+
+    //注册用户
+    @Override
+    public Integer register(emt_user emtUser) {
+        Integer result=mapper.register(emtUser);
+        return result;
+    }
+
+    //修改用户信息
+    @Override
+    public Integer changeUser(emt_user emtUser) {
+        Integer result=mapper.changeUser(emtUser);
+        return result;
+    }
+
+    //检查用户是否已经存在
+    @Override
+    public Integer selectUserName(String userName) {
+        Integer result=mapper.selectUserName(userName);
+        return result;
+    }
+
+    //用户登录
+    @Override
+    public emt_user loginUser(String userName, String userPassword) {
+        emt_user emtUser= mapper.loginUser(userName, userPassword);
+        return emtUser;
+    }
+
+    //添加追番
+    @Override
+    public Integer addSubscribe(Integer userId, Integer userSubId) {
+        Integer result=mapper.addSubscribe(userId, userSubId);
+        return result;
+    }
+
+    //获取用户追番列表
+    @Override
+    public List<emt_subscribe> selectSubscribe(Integer userId) {
+        List<emt_subscribe> result= mapper.selectSubscribe(userId);
+        return result;
+    }
+
+    //是否已经追番
+    @Override
+    public Integer isSubscribe(Integer userId, Integer userSubId) {
+        Integer result=mapper.isSubscribe(userId, userSubId);
+        return result;
+    }
+
+    //删除追番
+    @Override
+    public Integer deleteSubscribe(Integer userId, Integer userSubId) {
+        Integer result=mapper.deleteSubscribe(userId, userSubId);
+        return result;
+    }
+
+    //获取用户历史记录
+    @Override
+    public List<emt_history> getHistory(Integer userId) {
+        List<emt_history> result=mapper.getHistory(userId);
+        return result;
+    }
+
+    //添加历史记录
+    @Override
+    public Integer addHistory(emt_history emtHistory) {
+        Integer result= mapper.addHistory(emtHistory);
+        return result;
+    }
+
+    //删除历史记录
+    @Override
+    public Integer deleteHistory(emt_history emtHistory) {
+        Integer result=mapper.deleteHistory(emtHistory);
+        return result;
+    }
+
+    //查看历史记录是否已经存在
+    @Override
+    public emt_history selectHistory(emt_history emtHistory) {
+        emt_history result=mapper.selectHistory(emtHistory);
+        return result;
+    }
+
+    //更新历史记录
+    @Override
+    public Integer updateHistory(emt_history emtHistory) {
+        Integer result=mapper.updateHistory(emtHistory);
+        return result;
+    }
+
+
 }

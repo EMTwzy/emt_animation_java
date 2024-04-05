@@ -16,4 +16,5 @@ public class ff_vod {
     public String vodAddtime;//时间戳
     public String vodUrl;//播放地址
     public String vodLetter;//开头字母大小写
+    public String vodPlay; //当前视频所属
 }
